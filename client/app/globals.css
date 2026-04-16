@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/* ─── CSS Custom Properties (overridden by SettingsContext) ─────────── */
+:root {
+  --arabic-font: 'Amiri', serif;
+  --arabic-font-size: 28px;
+  --translation-font-size: 16px;
+
+  /* Color palette */
+  --color-bg:         #0d1117;
+  --color-bg-2:       #161b22;
+  --color-bg-3:       #1c2333;
+  --color-border:     #30363d;
+  --color-gold:       #d4af37;
+  --color-gold-light: #f0d060;
+  --color-emerald:    #10b981;
+  --color-emerald-dim: #059669;
+  --color-text:       #e6edf3;
+  --color-text-muted: #8b949e;
+  --color-text-dim:   #6e7681;
+}
+
+/* ─── Base Styles ───────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Arabic Text Utility ───────────────────────────────────────────── */
+.arabic-text {
+  font-family: var(--arabic-font) !important;
+  font-size: var(--arabic-font-size) !important;
+  direction: rtl;
+  text-align: right;
+  line-height: 2;
+  color: #f0d060;
+}
+
+.translation-text {
+  font-size: var(--translation-font-size) !important;
+  line-height: 1.75;
+  color: var(--color-text-muted);
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-dim);
+}
+
+/* ─── Skeleton loader ───────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position:  1000px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-2) 25%,
+    var(--color-bg-3) 50%,
+    var(--color-bg-2) 75%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 6px;
+}
+
+/* ─── Settings panel slide-in ───────────────────────────────────────── */
+.settings-panel {
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.settings-panel.open {
+  transform: translateX(0);
+}
+
+/* ─── Card hover lift ────────────────────────────────────────────────  */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.12);
+  border-color: var(--color-gold) !important;
+}
+
+/* ─── Gold accent underline ─────────────────────────────────────────── */
+.gold-underline {
+  background: linear-gradient(90deg, var(--color-gold), var(--color-emerald));
+  height: 2px;
+  border-radius: 1px;
+}
+
+/* ─── Search highlight ──────────────────────────────────────────────── */
+mark {
+  background: rgba(212, 175, 55, 0.25);
+  color: var(--color-gold-light);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* ─── Reveal type badge ─────────────────────────────────────────────── */
+.badge-meccan {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.badge-medinan {
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}

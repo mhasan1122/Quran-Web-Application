@@ -1,0 +1,25 @@
+{
+  "name": "quran-backend",
+  "version": "1.0.0",
+  "description": "Quran API server using Hono + Node.js + MongoDB",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "node --env-file=.env node_modules/.bin/tsx src/index.ts",
+    "start": "node --env-file=.env node_modules/.bin/tsx src/index.ts",
+    "build": "tsc",
+    "start:compiled": "node --env-file=.env dist/index.js"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.7",
+    "hono": "^4.7.7",
+    "mongoose": "^8.13.2",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.8.3"
+  },
+  "type": "module"
+}
