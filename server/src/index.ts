@@ -14,7 +14,27 @@ app.use('*', logger());
 app.use(
   '*',
   cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    origin: (origin) => {
+      // Allow same-origin / server-to-server / curl (no Origin header)
+      if (!origin) return '*';
+
+      const allowList = new Set(
+        (process.env.CORS_ORIGINS ??
+          'http://localhost:3000,http://127.0.0.1:3000,https://quran-web-application-56j9.vercel.app'
+        )
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      );
+
+      if (allowList.has(origin)) return origin;
+
+      // Optional: allow Vercel preview deployments for this project
+      // (e.g. https://quran-web-application-xxxx.vercel.app)
+      if (/^https:\/\/quran-web-application-[a-z0-9-]+\.vercel\.app$/i.test(origin)) return origin;
+
+      return null;
+    },
     allowMethods: ['GET', 'OPTIONS'],
     allowHeaders: ['Content-Type', 'Authorization'],
   })
