@@ -134,11 +134,13 @@ export async function seedDatabase(): Promise<void> {
     console.log('⚠️  Re-seeding: translations appear incorrect, fixing...');
   }
 
-  console.log('🌱 Seeding database from quran-json CDN...');
+  console.log('🌱 Seeding database from an online Quran dataset (GitHub)...');
 
   // quran_en.json has BOTH Arabic text AND English translation in each verse:
   // { id, name, transliteration, type, total_verses, verses: [{id, text(arabic), translation(english)}] }
-  const englishUrl = 'https://cdn.jsdelivr.net/npm/quran-json@3.1.2/dist/quran_en.json';
+  const englishUrl =
+    process.env.QURAN_DATA_URL ??
+    'https://raw.githubusercontent.com/risan/quran-json/v3.1.2/dist/quran_en.json';
 
   const englishRes = await fetch(englishUrl);
   if (!englishRes.ok) {

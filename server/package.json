@@ -5,9 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "node --env-file=.env node_modules/.bin/tsx src/index.ts",
-    "start": "node --env-file=.env node_modules/.bin/tsx src/index.ts",
     "build": "tsc",
-    "start:compiled": "node --env-file=.env dist/index.js"
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",

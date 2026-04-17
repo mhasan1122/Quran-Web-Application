@@ -1,12 +1,12 @@
 import { Hono } from 'hono';
-import { getSurahByNumber, getSurahMetaList } from '../data/quran.js';
+import Surah from '../models/Surah.js';
 
 const surahsRouter = new Hono();
 
 // GET /api/surahs — list all 114 surahs (metadata only, no ayahs)
 surahsRouter.get('/', async (c) => {
   try {
-    const surahs = await getSurahMetaList();
+    const surahs = await Surah.find({}, { _id: 0, __v: 0, ayahs: 0 }).sort({ number: 1 }).lean();
     return c.json({ success: true, data: surahs });
   } catch (err) {
     console.error(err);
@@ -23,7 +23,7 @@ surahsRouter.get('/:id', async (c) => {
   }
 
   try {
-    const surah = await getSurahByNumber(id);
+    const surah = await Surah.findOne({ number: id }, { _id: 0, __v: 0 }).lean();
     if (!surah) {
       return c.json({ success: false, error: 'Surah not found' }, 404);
     }

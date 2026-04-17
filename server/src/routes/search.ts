@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { loadQuran } from '../data/quran.js';
+import Surah from '../models/Surah.js';
 
 const searchRouter = new Hono();
 
@@ -16,50 +16,52 @@ searchRouter.get('/', async (c) => {
   }
 
   try {
-    const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-    const surahs = await loadQuran();
+    const safe = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(safe, 'i');
 
-    const results: Array<{
-      surahNumber: number;
-      surahName: string;
-      surahArabicName: string;
-      surahTransliteration: string;
-      ayahNumber: number;
-      arabic: string;
-      translation: string;
-    }> = [];
+    const [out] = await Surah.aggregate<{
+      data: Array<{
+        surahNumber: number;
+        surahName: string;
+        surahArabicName: string;
+        surahTransliteration: string;
+        ayahNumber: number;
+        arabic: string;
+        translation: string;
+      }>;
+      meta: Array<{ total: number }>;
+    }>([
+      { $unwind: '$ayahs' },
+      { $match: { 'ayahs.translation': { $regex: regex } } },
+      {
+        $project: {
+          _id: 0,
+          surahNumber: '$number',
+          surahName: '$englishName',
+          surahArabicName: '$arabicName',
+          surahTransliteration: '$transliteration',
+          ayahNumber: '$ayahs.number',
+          arabic: '$ayahs.arabic',
+          translation: '$ayahs.translation',
+        },
+      },
+      { $sort: { surahNumber: 1, ayahNumber: 1 } },
+      {
+        $facet: {
+          data: [{ $limit: 100 }],
+          meta: [{ $count: 'total' }],
+        },
+      },
+    ]);
 
-    for (const surah of surahs) {
-      for (const ayah of surah.ayahs) {
-        if (regex.test(ayah.translation)) {
-          results.push({
-            surahNumber: surah.number,
-            surahName: surah.englishName,
-            surahArabicName: surah.arabicName,
-            surahTransliteration: surah.transliteration,
-            ayahNumber: ayah.number,
-            arabic: ayah.arabic,
-            translation: ayah.translation,
-          });
-        }
-      }
-    }
-
-    // Sort by surah number then ayah number
-    results.sort((a, b) =>
-      a.surahNumber !== b.surahNumber
-        ? a.surahNumber - b.surahNumber
-        : a.ayahNumber - b.ayahNumber
-    );
-
-    // Limit to 100 results
-    const limited = results.slice(0, 100);
+    const total = out?.meta?.[0]?.total ?? 0;
+    const data = out?.data ?? [];
 
     return c.json({
       success: true,
       query,
-      total: results.length,
-      data: limited,
+      total,
+      data,
     });
   } catch (err) {
     console.error(err);

@@ -2,9 +2,10 @@ import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import { loadQuran } from './data/quran.js';
+import mongoose from 'mongoose';
 import surahsRouter from './routes/surahs.js';
 import searchRouter from './routes/search.js';
+import { seedDatabase } from './data/seed.js';
 
 const app = new Hono();
 
@@ -34,9 +35,16 @@ const PORT = parseInt(process.env.PORT ?? '3001', 10);
 
 async function main() {
   try {
-    console.log('📖 Loading Quran dataset (no DB)...');
-    const surahs = await loadQuran();
-    console.log(`✅ Loaded ${surahs.length} surahs into memory`);
+    const mongoUri = process.env.MONGO_URI ?? process.env.MONGODB_URI;
+    if (!mongoUri) {
+      throw new Error('Missing env var MONGO_URI (or MONGODB_URI)');
+    }
+
+    console.log('🗄️  Connecting to MongoDB...');
+    await mongoose.connect(mongoUri);
+    console.log('✅ Connected to MongoDB');
+
+    await seedDatabase();
 
     // Start server
     serve({ fetch: app.fetch, port: PORT });
