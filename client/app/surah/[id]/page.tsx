@@ -52,7 +52,7 @@ export default async function SurahPage({ params }: Props) {
     <div className="min-h-screen">
       {/* Surah Header */}
       <section
-        className="relative overflow-hidden py-12 px-4"
+        className="relative overflow-hidden pt-16 pb-12 px-4"
         style={{
           background: 'linear-gradient(180deg, rgba(212,175,55,0.05) 0%, transparent 100%)',
           borderBottom: '1px solid var(--color-border)',
@@ -69,7 +69,7 @@ export default async function SurahPage({ params }: Props) {
           {/* Back link */}
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm mb-8 transition-colors"
+            className="flex items-center justify-center gap-2 text-sm mb-6 transition-colors"
             style={{ color: 'var(--color-text-muted)' }}
             id="back-to-surahs"
           >
@@ -94,7 +94,7 @@ export default async function SurahPage({ params }: Props) {
           {/* Arabic name */}
           <h1
             className="text-5xl sm:text-6xl mb-3 leading-tight"
-            style={{ fontFamily: "'Amiri', serif", color: 'var(--color-gold-light)' }}
+            style={{ fontFamily: 'var(--arabic-font)', color: 'var(--color-gold-light)' }}
             dir="rtl"
             lang="ar"
           >
@@ -178,7 +178,12 @@ export default async function SurahPage({ params }: Props) {
           >
             <p
               className="text-3xl sm:text-4xl leading-loose"
-              style={{ fontFamily: "'Amiri', serif", color: 'var(--color-gold-light)' }}
+              style={{
+                fontFamily: 'var(--arabic-font)',
+                fontSize: 'var(--arabic-font-size)',
+                color: 'var(--color-gold-light)',
+                textAlign: 'center',
+              }}
               dir="rtl"
               lang="ar"
               aria-label="Bismillah ir-rahman ir-rahim"

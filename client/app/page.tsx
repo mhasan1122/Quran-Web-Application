@@ -50,7 +50,7 @@ export default async function HomePage() {
           {/* Arabic Basmala */}
           <div
             className="text-4xl sm:text-5xl mb-4 leading-loose"
-            style={{ fontFamily: "'Amiri', serif", color: 'var(--color-gold-light)' }}
+            style={{ fontFamily: 'var(--arabic-font)', color: 'var(--color-gold-light)' }}
             dir="rtl"
             lang="ar"
           >
