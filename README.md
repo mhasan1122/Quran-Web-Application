@@ -1,64 +1,81 @@
+```markdown
 # Quran Reader
 
-A full-stack Quran web app with Arabic text and Sahih International English translation, plus fast search and reading preferences.
+A simple, modern Quran web application built for a smooth and focused reading experience. It displays Arabic text alongside the Sahih International English translation, with fast search and customizable reading preferences.
 
-### Live
+---
 
-- **Website**: `https://quran-web-application-56j9.vercel.app/`
-- **Backend API**: `https://quran-web-application-1.onrender.com`
+## Live Demo
+
+- Website: https://quran-web-application-56j9.vercel.app/
+- Backend API: https://quran-web-application-1.onrender.com
+
+---
 
 ## Features
 
-- Browse all 114 surahs
-- Read Arabic with English translation (Sahih International)
-- Search ayahs by translation text
-- Reading settings (font family and font sizes)
-- Settings persist in the browser (localStorage)
-- Responsive layout for mobile and desktop
+- Browse all 114 surahs  
+- Read Arabic with English translation (Sahih International)  
+- Fast verse search using English keywords  
+- Adjustable reading settings (font family and size)  
+- Preferences saved in browser (localStorage)  
+- Fully responsive design (mobile and desktop)  
+
+---
 
 ## Architecture
 
 ```
-MongoDB <-> Hono (Node.js) API <-> Next.js client
-```
 
-## Getting started (local)
+MongoDB <-> Hono (Node.js) API <-> Next.js Client
+
+````
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ (recommended: Node 20+)
-- MongoDB (local) or a MongoDB Atlas connection string
+- MongoDB (local or Atlas)
 
-### Backend
+---
+
+### Backend Setup
 
 ```bash
 cd server
 npm install
 
-# Create your env file
 cp .env.example .env
 
 npm run dev
-```
+````
 
-API runs on `http://localhost:3001`.
+Backend runs at:
+[http://localhost:3001](http://localhost:3001)
 
-### Frontend
+---
+
+### Frontend Setup
 
 ```bash
 cd client
 npm install
 
-# Create/update client/.env with your API base URL
-# Example for local dev:
-# NEXT_PUBLIC_API_URL=http://localhost:3001
+# Add this in client/.env
+NEXT_PUBLIC_API_URL=http://localhost:3001
 
 npm run dev
 ```
 
-Client runs on `http://localhost:3000`.
+Frontend runs at:
+[http://localhost:3000](http://localhost:3000)
 
-## Environment variables
+---
+
+## Environment Variables
 
 ### Backend (`server/.env`)
 
@@ -66,13 +83,14 @@ Client runs on `http://localhost:3000`.
 PORT=3001
 MONGO_URI=mongodb://127.0.0.1:27017/quran
 
-# Optional: comma-separated allowed origins for CORS
-# CORS_ORIGINS=http://localhost:3000,https://your-app.vercel.app
+# Optional: allowed origins for CORS
 CORS_ORIGINS=
 
-# Optional: override the dataset URL used for seeding
+# Optional: dataset source
 QURAN_DATA_URL=https://raw.githubusercontent.com/risan/quran-json/v3.1.2/dist/quran_en.json
 ```
+
+---
 
 ### Frontend (`client/.env`)
 
@@ -80,19 +98,44 @@ QURAN_DATA_URL=https://raw.githubusercontent.com/risan/quran-json/v3.1.2/dist/qu
 NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
-## API endpoints
+---
 
-- `GET /health`
-- `GET /api/surahs`
-- `GET /api/surahs/:id` (1–114)
-- `GET /api/search?q=mercy`
+## API Endpoints
 
-## Data source
+* `GET /health` – check server status
+* `GET /api/surahs` – get all surahs
+* `GET /api/surahs/:id` – get a specific surah (1–114)
+* `GET /api/search?q=keyword` – search verses
 
-On first startup, the server seeds MongoDB using the dataset from [`risan/quran-json`](https://github.com/risan/quran-json). After that, it reads from the database.
+---
 
-## Tech stack
+## Data Source
 
-- Backend: Hono, Node.js, TypeScript, Mongoose
-- Database: MongoDB
-- Frontend: Next.js, React, TypeScript, Tailwind CSS
+On first startup, the server automatically seeds Quran data from the
+[https://github.com/risan/quran-json](https://github.com/risan/quran-json) dataset.
+
+After that, all data is served from MongoDB for faster performance.
+
+---
+
+## Tech Stack
+
+**Backend**
+
+* Hono
+* Node.js
+* TypeScript
+* Mongoose
+
+**Database**
+
+* MongoDB
+
+**Frontend**
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+
+
