@@ -41,7 +41,17 @@ async function main() {
     }
 
     console.log('🗄️  Connecting to MongoDB...');
-    await mongoose.connect(mongoUri);
+    mongoose.connection.on('error', (e) => {
+      console.error('❌ MongoDB connection error:', e);
+    });
+    mongoose.connection.on('disconnected', () => {
+      console.error('⚠️  MongoDB disconnected');
+    });
+
+    await mongoose.connect(mongoUri, {
+      serverSelectionTimeoutMS: 15000,
+      connectTimeoutMS: 15000,
+    });
     console.log('✅ Connected to MongoDB');
 
     await seedDatabase();
@@ -53,7 +63,11 @@ async function main() {
     console.log(`   → GET /api/surahs/:id`);
     console.log(`   → GET /api/search?q=...`);
   } catch (err) {
-    console.error('❌ Startup failed:', err);
+    console.error(
+      '❌ Startup failed:',
+      err instanceof Error ? `${err.name}: ${err.message}` : err
+    );
+    if (err instanceof Error && err.stack) console.error(err.stack);
     process.exit(1);
   }
 }
