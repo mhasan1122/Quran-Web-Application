@@ -113,7 +113,12 @@ function SearchContent() {
         >
           <div className="text-3xl mb-3">⚠️</div>
           <p className="text-sm font-medium mb-1" style={{ color: '#f87171' }}>Search Error</p>
-          <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{error}</p>
+          <p
+            className="text-sm whitespace-pre-line"
+            style={{ color: 'var(--color-text-muted)', lineHeight: 1.5 }}
+          >
+            {error}
+          </p>
         </div>
       )}
 

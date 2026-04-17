@@ -1,5 +1,30 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
+class ApiError extends Error {
+  name = 'ApiError' as const;
+  constructor(
+    message: string,
+    public readonly details?: {
+      url?: string;
+      status?: number;
+    }
+  ) {
+    super(message);
+  }
+}
+
+function humanizeNetworkError(err: unknown, url: string): ApiError {
+  const msg =
+    err instanceof Error ? err.message : typeof err === 'string' ? err : 'Network error';
+
+  // Browser fetch commonly throws TypeError("Failed to fetch") when server is down / CORS / DNS.
+  if (msg.toLowerCase().includes('failed to fetch')) {
+    return new ApiError('Server Unreachable.', { url });
+  }
+
+  return new ApiError('Server Unreachable.', { url });
+}
+
 export interface SurahMeta {
   number: number;
   arabicName: string;
@@ -43,12 +68,25 @@ interface SearchResponse {
 }
 
 async function apiFetch<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, {
-    next: { revalidate: 86400 }, // 24h cache for SSG
-  });
+  const url = `${API_URL}${path}`;
+
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      next: { revalidate: 86400 }, // 24h cache for SSG
+    });
+  } catch (err) {
+    throw humanizeNetworkError(err, url);
+  }
+
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: 'Unknown error' }));
-    throw new Error(err.error ?? `API error ${res.status}`);
+    const errBody = await res.json().catch(() => ({ error: 'Request failed' }));
+    const message =
+      (typeof errBody === 'object' && errBody && 'error' in errBody && typeof errBody.error === 'string'
+        ? errBody.error
+        : undefined) ?? `API request failed (${res.status})`;
+
+    throw new ApiError(`${message}\nTried: ${url}`, { url, status: res.status });
   }
   return res.json() as Promise<T>;
 }
